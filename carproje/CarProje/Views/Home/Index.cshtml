@@ -1,0 +1,543 @@
+﻿
+<html> 
+
+<head>
+
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVHRhwshNUdWUr5FmBfTExhUfUUGk4Nss&callback=initMap&v=weekly"
+            async></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <style>
+        #harita {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 10px;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 400;
+            line-height: 1.5;
+            background-color: #fff;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700;
+            font-family: Montserrat;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        ul {
+            list-style: none;
+            margin: auto;
+            padding: 0;
+            position: relative;
+        }
+        li {
+            display: inline-block;
+            float: left;
+            margin-right: 1px;
+        }
+            li a {
+                display: block;
+                background: #2f3036;
+                min-width: 140px;
+                color: #fff;
+                text-decoration: none;
+                height: 50px;
+                line-height: 50px;
+                text-align: center;
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            }
+
+                li a:hover {
+                    background: #19C589;
+                }
+
+            li:hover ul a {
+                background: #f3f3f3;
+                color: black;
+                height: 40px;
+                line-height: 40px;
+            }
+
+                li:hover ul a:hover {
+                    background: #19C589;
+                    color: #fff;
+                }
+
+            li ul li {
+                display: block;
+                float: none;
+            }
+
+                li ul li a {
+                    text-align: left;
+                    min-width: 100px;
+                    padding: 0 20px;
+                }
+
+            li:hover a {
+                background: #19C589;
+            }
+
+            li ul {
+                display: none;
+            }
+
+        ul li a:hover + .hidden,
+        .hidden:hover {
+            display: block;
+        }
+
+        ul li:hover ul {
+            display: block;
+        }
+        section {
+            padding-top: 10rem;
+            padding-bottom: 10rem;
+            text-align: center;
+        }
+
+
+
+        .btn-large {
+            font-size: 2rem;
+            padding: 2.2rem 1.6rem;
+        }
+
+        .btn {
+            margin-top: 4rem;
+            font-weight: 400;
+            display: inline-block;
+            border: 2px solid transparent;
+            border-radius: .4rem;
+            cursor: pointer;
+            transition: all .5s;
+        }
+
+        .btn-social {
+            width: 5rem;
+            height: 5rem;
+            border-radius: 50%;
+            font-size: 2rem;
+            line-height: 2rem;
+        }
+
+        .btn-outline {
+            color: #fff;
+            border-color: #fff;
+            background-color: transparent;
+        }
+
+            .btn-outline:hover {
+                color: #212529;
+                background-color: #fff;
+            }
+
+        .btn-primary {
+            background-color: #18BC9C;
+            border-color: #18BC9C;
+            color: #fff;
+            padding: 1.2rem 1rem;
+        }
+
+            .btn-primary:hover {
+                background-color: #128f76;
+                border-color: #128f76;
+            }
+
+        .img-fluid {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .clearfix::after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+
+        .container {
+            width: 1140px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: .5rem;
+            padding-right: .5rem;
+        }
+
+        .text-uppercase {
+            text-transform: uppercase;
+        }
+
+        /*navbar*/
+
+        nav {
+            width: 100%;
+            font-family: Montserrat;
+            background-color: #2C3E50;
+            color: #fff;
+            padding-top: 2.4rem;
+            padding-bottom: 2.4rem;
+            position: fixed;
+            z-index: 500;
+        }
+
+        #logo-box {
+            float: left;
+            padding-top: .5rem;
+        }
+
+            #logo-box .logo {
+                color: #fff;
+                font-weight: 700;
+                font-size: 3.2rem;
+            }
+
+        #nav-links {
+            float: right;
+        }
+
+            #nav-links .nav-item {
+                float: left;
+                margin: .4rem;
+            }
+
+            #nav-links .nav-link {
+                color: #fff;
+                font-size: 1.6rem;
+                font-weight: 700;
+                display: block;
+                padding: 1.6rem;
+                letter-spacing: .1rem;
+                transition: color .3s;
+            }
+
+                #nav-links .nav-link:hover {
+                    color: #18bc9c;
+                }
+
+
+        /*Header*/
+
+        header {
+            background-color: #18BC9C;
+            padding-top: calc(112px + 10rem);
+            padding-bottom: 112px;
+            text-align: center;
+        }
+
+            header h1 {
+                color: #fff;
+                font-size: 7.6rem;
+            }
+
+            header h2 {
+                color: #fff;
+                font-size: 2.8rem;
+                font-family: 'Lato';
+                font-weight: 300;
+            }
+
+        hr.star-light {
+            border-color: #fff;
+        }
+
+        hr.star-dark {
+            border-color: #2C3E50;
+        }
+
+        .star-light, .star-dark {
+            border: none;
+            border-top: .4rem solid;
+            max-width: 25rem;
+            margin: 2.5rem auto;
+            overflow: visible;
+            height: 0;
+        }
+
+            .star-light::after {
+                color: #fff;
+                background-color: #18BC9C;
+            }
+
+            .star-dark::after {
+                color: #2C3E50;
+                background-color: #fff;
+            }
+
+            .star-light::after, .star-dark::after {
+                content: "\f005";
+                font-family: "Font Awesome 5 Free";
+                font-weight: 900;
+                font-size: 3.2rem;
+                position: relative;
+                padding: 0 8px;
+                top: -26px;
+            }
+
+        /* Portfolio */
+
+        #portfolio {
+        }
+
+            #portfolio h2 {
+                font-size: 4.8rem;
+                color: #2C3E50;
+            }
+
+        .col {
+            float: left;
+            width: 33.33333%;
+            padding: 10px;
+        }
+
+        .portfolio-item {
+            position: relative;
+        }
+
+            .portfolio-item img {
+                display: block;
+            }
+
+
+        .img-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background-color: #18BC9C;
+            opacity: 0;
+            transition: opacity .5s ease;
+        }
+
+
+            .img-overlay .icon {
+                color: #fff;
+                font-size: 2rem;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%,-50%);
+            }
+
+
+        .portfolio-item:hover .img-overlay {
+            opacity: 0.8;
+        }
+
+        /*about*/
+        #about {
+            background-color: #18BC9C;
+            color: #fff;
+        }
+
+            #about h2 {
+                font-size: 4.8rem;
+            }
+
+        #about-text {
+            text-align: left;
+        }
+
+            #about-text .left {
+                float: left;
+                width: 50%;
+                padding-right: 2rem;
+                padding-left: 23rem;
+            }
+
+            #about-text .right {
+                float: right;
+                width: 50%;
+                padding-left: 2rem;
+                padding-right: 23rem;
+            }
+
+            #about-text .text {
+                font-size: 2rem;
+            }
+
+        /*contact*/
+
+        #contact {
+        }
+
+            #contact h2 {
+                font-size: 4.8rem;
+                color: #2C3E50;
+            }
+
+        #contact-form {
+            width: 70%;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .form-group {
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 3rem;
+            margin-bottom: 4rem;
+        }
+
+
+            .form-group input, .form-group textarea {
+                border: none;
+                width: 100%;
+                display: block;
+                font-size: 2.4rem;
+            }
+
+                .form-group input:focus {
+                    outline: 0;
+                }
+
+        footer {
+            padding-top: 6rem;
+            padding-bottom: 6rem;
+            background-color: #2C3E50;
+            color: #fff;
+            text-align: center;
+        }
+
+            footer h4 {
+                font-size: 2.4rem;
+            }
+
+            footer p {
+                font-size: 2rem;
+                margin-top: 1rem;
+            }
+
+            footer li {
+                display: inline-block;
+                margin-right: 1rem;
+            }
+
+        .copyright {
+            background-color: #1A252F;
+            padding-top: 2.4rem;
+            padding-bottom: 2.4rem;
+            color: #fff;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container clearfix">
+            <div id="logo-box">
+                <a href="/" class="logo text-uppercase">
+                    GPS of CAR
+                </a>
+            </div>
+            <div id="nav-links">
+                <ul>
+                    
+                        @if (CarProje._main.loginUser.ID == 0)
+                        {
+                    <li class="nav-item">
+                        <a href="@Url.Action("Userlist","Account")" class="nav-link text-uppercase">
+                            USERS
+                        </a>
+                    </li>
+                        }
+                        
+                    <li class="nav-item">
+                        <a href="#" class="nav-link text-uppercase">
+                            TIME
+                        </a>
+                        <ul class="hidden">
+                            <li><a href="#">0-2h</a></li>
+                            <li><a href="#">0-6h</a></li>
+                            <li><a href="#">0-12h</a></li>
+                            <li><a href="#">0-24h</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="@Url.Action("Logout","Account")" class="nav-link text-uppercase">
+                            LOG OUT
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div id="harita"></div>
+</body>
+</html>
+<script>
+    function initMap() {
+        var map = new google.maps.Map(document.getElementById("harita"), {
+            center: { lat: 59, lng: 17 },
+            zoom: 8,
+        });
+        marker1 = new google.maps.Marker({
+            position: { lat: 59.42190595212989, lng: 17.822133881640568 },
+            map: map,
+            icon: "https://cdn1.iconfinder.com/data/icons/cars-01-1/512/sportcar-55.png"
+
+        })
+        marker2 = new google.maps.Marker({
+            position: { lat: 59.42185738933145, lng: 17.822070840094387 },
+            map: map,
+            icon: "https://cdn1.iconfinder.com/data/icons/cars-01-1/512/sportcar-55.png"
+
+        })
+        marker3 = new google.maps.Marker({
+            position: { lat: 59.42185588749498, lng: 17.822095422084477 },
+            map: map,
+            icon: "https://cdn1.iconfinder.com/data/icons/cars-01-1/512/sportcar-55.png"
+
+        })
+        marker4 = new google.maps.Marker({
+            position: { lat: 59.421848554811596, lng: 17.822131426741276},
+            map: map,
+            icon: "https://cdn1.iconfinder.com/data/icons/cars-01-1/512/sportcar-55.png"
+
+        })
+        marker5 = new google.maps.Marker({
+            position: { lat: 59.39579089608902, lng: 17.95120055482195 },
+            map: map,
+            icon: "https://cdn1.iconfinder.com/data/icons/cars-01-1/512/sportcar-55.png"
+
+        })
+        marker6 = new google.maps.Marker({
+            position: { lat: 59.40136607557658, lng: 17.96748297489402 },
+            map: map,
+            icon: "https://cdn1.iconfinder.com/data/icons/cars-01-1/512/sportcar-55.png"
+
+        })
+        marker7 = new google.maps.Marker({
+            position: { lat: 59.395615923660884, lng: 17.983371215273056 },
+            map: map,
+            icon: "https://cdn1.iconfinder.com/data/icons/cars-01-1/512/sportcar-55.png"
+
+        })
+        marker8 = new google.maps.Marker({
+            position: { lat: 59.38795566176862, lng: 18.001028286319084 },
+            map: map,
+            icon: "https://cdn1.iconfinder.com/data/icons/cars-01-1/512/sportcar-55.png"
+
+        })
+    }
+    
+
+</script>
